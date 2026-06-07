@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dataset Image Upload – Drowsiness UI</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: rgba(255,255,255,0.06);
+      --card2: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --line: rgba(255,255,255,0.12);
+      --green: #22c55e;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --blue: #60a5fa;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 15% 15%, rgba(96,165,250,0.25), transparent 55%),
+        radial-gradient(1000px 550px at 85% 25%, rgba(239,68,68,0.18), transparent 55%),
+        radial-gradient(900px 600px at 55% 85%, rgba(34,197,94,0.18), transparent 60%),
+        var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+    .top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 0.2px;
+    }
+    .sub {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .pill {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      min-height: 120px;
+    }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .drop {
+      border: 1px dashed rgba(255,255,255,0.25);
+      border-radius: 16px;
+      padding: 18px;
+      background: rgba(255,255,255,0.04);
+      transition: 150ms ease;
+    }
+    .drop.drag {
+      background: rgba(96,165,250,0.12);
+      border-color: rgba(96,165,250,0.55);
+      transform: translateY(-1px);
+    }
+    .drop h2 { margin: 0 0 8px; font-size: 16px; }
+    .drop p { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: 120ms ease;
+      user-select: none;
+    }
+    .btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-1px); }
+    .btn.primary { background: rgba(96,165,250,0.16); border-color: rgba(96,165,250,0.35); }
+    .btn.primary:hover { background: rgba(96,165,250,0.22); }
+    .btn.danger { background: rgba(239,68,68,0.14); border-color: rgba(239,68,68,0.35); }
+    input[type="file"] { display: none; }
+
+    .preview {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .imgbox {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,0.25);
+      aspect-ratio: 16 / 9;
+      display: grid;
+      place-items: center;
+    }
+    .imgbox img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+      background: rgba(0,0,0,0.2);
+    }
+    .imgbox .hint {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 14px;
+      text-align: center;
+    }
+    .kv {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .metric {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .metric .k { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .metric .v { font-size: 18px; font-weight: 800; letter-spacing: 0.2px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.08);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+    .badge i {
+      width: 9px;
+      height: 9px;
+      border-radius: 99px;
+      display: inline-block;
+    }
+    .badge.green { color: var(--green); }
+    .badge.green i { background: var(--green); }
+    .badge.red { color: var(--red); }
+    .badge.red i { background: var(--red); }
+    .badge.amber { color: var(--amber); }
+    .badge.amber i { background: var(--amber); }
+    .small { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .err {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(239,68,68,0.35);
+      background: rgba(239,68,68,0.10);
+      color: rgba(255,255,255,0.88);
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .imgbox { aspect-ratio: 4 / 3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Dataset Image Upload (AWAKE / DROWSY)</h1>
+        <div class="sub">
+          Upload one image and get prediction output. Works with your existing trained model if present; otherwise the service can train automatically.
+          <div class="small">Endpoint: <span class="mono">/api/ai/dataset/predict</span></div>
+        </div>
+      </div>
+      <div class="row" style="justify-content: flex-end;">
+        <div class="pill">Service: <span id="svc" class="mono">checking…</span></div>
+        <a class="pill" href="/dataset-browser" style="text-decoration:none;color:var(--muted);">Dataset browser</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div id="drop" class="drop">
+          <h2>1) Upload Image</h2>
+          <p>Drag & drop an image here, or click “Choose Image”. Then click “Predict”.</p>
+          <div class="row">
+            <label class="btn" for="file">Choose Image</label>
+            <button class="btn primary" id="predictBtn" disabled>Predict</button>
+            <button class="btn danger" id="clearBtn" disabled>Clear</button>
+            <input id="file" type="file" accept="image/*" />
+          </div>
+
+          <div class="preview">
+            <div class="imgbox">
+              <div class="hint" id="hint">No image selected yet.</div>
+              <img id="img" alt="preview" />
+            </div>
+            <div class="small">
+              Selected: <span class="mono" id="fname">—</span>
+            </div>
+          </div>
+
+          <div id="err" class="err"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin: 0 0 10px; font-size: 16px;">2) Output</h2>
+        <div class="kv">
+          <div class="metric">
+            <div class="k">Status</div>
+            <div class="v"><span class="badge amber" id="status"><i></i> WAITING</span></div>
+            <div class="small">FaceDetected: <span class="mono" id="face">—</span></div>
+          </div>
+          <div class="metric">
+            <div class="k">EAR</div>
+            <div class="v mono" id="ear">—</div>
+            <div class="small">Mean EAR (from landmarks)</div>
+          </div>
+          <div class="metric">
+            <div class="k">Confidence</div>
+            <div class="v mono" id="conf">—</div>
+            <div class="small">Model confidence (0 to 1)</div>
+          </div>
+          <div class="metric">
+            <div class="k">Model</div>
+            <div class="small">
+              UsedModel: <span class="mono" id="usedModel">—</span><br/>
+              ModelPath: <span class="mono" id="modelPath">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const drop = document.getElementById('drop');
+    const fileInput = document.getElementById('file');
+    const predictBtn = document.getElementById('predictBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const img = document.getElementById('img');
+    const hint = document.getElementById('hint');
+    const fname = document.getElementById('fname');
+    const err = document.getElementById('err');
+
+    const statusEl = document.getElementById('status');
+    const earEl = document.getElementById('ear');
+    const confEl = document.getElementById('conf');
+    const faceEl = document.getElementById('face');
+    const usedModelEl = document.getElementById('usedModel');
+    const modelPathEl = document.getElementById('modelPath');
+    const svc = document.getElementById('svc');
+
+    let selectedFile = null;
+
+    function setError(msg) {
+      err.style.display = msg ? 'block' : 'none';
+      err.textContent = msg || '';
+    }
+
+    function setBadge(kind, text) {
+      statusEl.className = 'badge ' + kind;
+      statusEl.innerHTML = '<i></i> ' + text;
+    }
+
+    function setBusy(isBusy) {
+      predictBtn.disabled = isBusy || !selectedFile;
+      clearBtn.disabled = isBusy || !selectedFile;
+      predictBtn.textContent = isBusy ? 'Predicting…' : 'Predict';
+    }
+
+    function setFile(file) {
+      selectedFile = file;
+      setError('');
+      if (!file) {
+        img.style.display = 'none';
+        hint.style.display = 'block';
+        hint.textContent = 'No image selected yet.';
+        fname.textContent = '—';
+        predictBtn.disabled = true;
+        clearBtn.disabled = true;
+        setBadge('amber', 'WAITING');
+        earEl.textContent = '—';
+        confEl.textContent = '—';
+        faceEl.textContent = '—';
+        usedModelEl.textContent = '—';
+        modelPathEl.textContent = '—';
+        return;
+      }
+
+      fname.textContent = file.name;
+      predictBtn.disabled = false;
+      clearBtn.disabled = false;
+
+      const url = URL.createObjectURL(file);
+      img.onload = () => URL.revokeObjectURL(url);
+      img.src = url;
+      img.style.display = 'block';
+      hint.style.display = 'none';
+    }
+
+    async function checkService() {
+      try {
+        const r = await fetch('/api/ai/health');
+        if (!r.ok) throw new Error('health failed');
+        svc.textContent = 'OK';
+      } catch {
+        svc.textContent = 'NOT RUNNING';
+      }
+    }
+
+    async function predict() {
+      if (!selectedFile) return;
+      setBusy(true);
+      setError('');
+      setBadge('amber', 'PROCESSING');
+
+      try {
+        const fd = new FormData();
+        fd.append('file', selectedFile);
+
+        const r = await fetch('/api/ai/dataset/predict', { method: 'POST', body: fd });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          throw new Error(data?.detail || 'Prediction failed');
+        }
+
+        const status = data.status || '—';
+        const face = !!data.face_detected;
+        const ear = (data.ear ?? null);
+        const conf = (data.confidence ?? null);
+        const usedModel = !!data.used_model;
+        const modelPath = data.model_path || '—';
+
+        if (!face) {
+          setBadge('amber', 'NO FACE');
+        } else if (status === 'DROWSY') {
+          setBadge('red', 'DROWSY');
+        } else {
+          setBadge('green', 'AWAKE');
+        }
+
+        faceEl.textContent = face ? 'true' : 'false';
+        earEl.textContent = ear === null ? '—' : Number(ear).toFixed(3);
+        confEl.textContent = conf === null ? '—' : Number(conf).toFixed(3);
+        usedModelEl.textContent = usedModel ? 'true' : 'false';
+        modelPathEl.textContent = modelPath;
+      } catch (e) {
+        setBadge('amber', 'ERROR');
+        setError(String(e?.message || e));
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    drop.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      drop.classList.add('drag');
+    });
+    drop.addEventListener('dragleave', () => drop.classList.remove('drag'));
+    drop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      drop.classList.remove('drag');
+      const f = e.dataTransfer?.files?.[0];
+      if (f) setFile(f);
+    });
+
+    fileInput.addEventListener('change', () => setFile(fileInput.files?.[0] || null));
+    predictBtn.addEventListener('click', predict);
+    clearBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      setFile(null);
+    });
+
+    checkService();
+    setFile(null);
+  </script>
+</body>
+</html>

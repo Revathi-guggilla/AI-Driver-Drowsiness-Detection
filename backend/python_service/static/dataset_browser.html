@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dataset Browser – Drowsy vs Non-Drowsy</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: rgba(255, 255, 255, 0.06);
+      --card2: rgba(255, 255, 255, 0.10);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.65);
+      --line: rgba(255, 255, 255, 0.12);
+      --green: #22c55e;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --blue: #60a5fa;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 15% 15%, rgba(96, 165, 250, 0.25), transparent 55%),
+        radial-gradient(1000px 550px at 85% 25%, rgba(239, 68, 68, 0.18), transparent 55%),
+        radial-gradient(900px 600px at 55% 85%, rgba(34, 197, 94, 0.18), transparent 60%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    .top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 0.2px;
+    }
+
+    .sub {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill i {
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.35);
+      display: inline-block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+      gap: 6px;
+    }
+
+    .tab {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 13px;
+      transition: 120ms ease;
+      user-select: none;
+    }
+
+    .tab.active {
+      border-color: rgba(96, 165, 250, 0.35);
+      background: rgba(96, 165, 250, 0.14);
+    }
+
+    .counts {
+      display: inline-flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .counts b {
+      color: var(--text);
+    }
+
+    .searchRow {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      outline: none;
+      min-width: 240px;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: 120ms ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      background: rgba(96, 165, 250, 0.16);
+      border-color: rgba(96, 165, 250, 0.35);
+    }
+
+    .btn.danger {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .thumbGrid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .thumb {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.25);
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: 120ms ease;
+    }
+
+    .thumb:hover {
+      transform: translateY(-1px);
+      border-color: rgba(96, 165, 250, 0.35);
+    }
+
+    .thumb.active {
+      outline: 2px solid rgba(96, 165, 250, 0.65);
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.05);
+    }
+
+    .thumb .cap {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 4px 6px;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .previewBox {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.25);
+      aspect-ratio: 4 / 3;
+      display: grid;
+      place-items: center;
+      margin-bottom: 10px;
+    }
+
+    .previewBox img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .metric {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .metric .k {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .metric .v {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.08);
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+
+    .badge i {
+      width: 9px;
+      height: 9px;
+      border-radius: 99px;
+      display: inline-block;
+    }
+
+    .badge.green {
+      color: var(--green);
+    }
+
+    .badge.green i {
+      background: var(--green);
+    }
+
+    .badge.red {
+      color: var(--red);
+    }
+
+    .badge.red i {
+      background: var(--red);
+    }
+
+    .badge.amber {
+      color: var(--amber);
+    }
+
+    .badge.amber i {
+      background: var(--amber);
+    }
+
+    .err {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.10);
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 13px;
+    }
+
+    a {
+      color: rgba(96, 165, 250, 0.95);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1100px) {
+      .thumbGrid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .thumbGrid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      input[type="text"] {
+        min-width: 200px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .thumbGrid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Gauge styles */
+    .chart-container {
+      display: none;
+      /* Hidden until prediction */
+      flex-direction: column;
+      align-items: center;
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .gauge {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(var(--amber) 0deg, rgba(255, 255, 255, 0.05) 0deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+      transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gauge::before {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: #1e293b;
+      /* Match card bg */
+    }
+
+    .gauge-value {
+      position: relative;
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .gauge-label {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Dataset Browser (Drowsy / Non‑Drowsy)</h1>
+        <div class="sub">
+          Browse images from <span class="mono">backend/python_service/dataset</span> and run prediction on any sample.
+          <div style="margin-top:6px">
+            <span class="pill"><i id="svcDot"></i> Service: <span id="svc" class="mono">checking…</span></span>
+            <span class="pill">Model: <span id="model" class="mono">—</span></span>
+            <span class="pill" id="modePill" title="Click to toggle">
+              Result: <span id="resMode" class="mono">GROUND_TRUTH</span>
+            </span>
+            <span class="pill"><a href="/dataset-ui">Single image upload UI</a></span>
+          </div>
+        </div>
+      </div>
+      <div class="pill">Endpoint: <span class="mono">/api/ai/dataset/*</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="toolbar">
+          <!-- Tabs removed for unified view -->
+          <div class="counts" id="counts">
+            <span>AWAKE: <b id="cntAwake">—</b> <small id="pctAwake"
+                style="color:var(--muted); opacity:0.8;"></small></span>
+            <span>DROWSY: <b id="cntDrowsy">—</b> <small id="pctDrowsy"
+                style="color:var(--muted); opacity:0.8;"></small></span>
+          </div>
+          <div class="searchRow">
+            <input id="q" type="text" placeholder="Search filename (e.g. A0012)" />
+            <button class="btn" id="searchBtn" type="button">Search</button>
+            <button class="btn danger" id="clearSearchBtn" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div class="thumbGrid" id="grid"></div>
+
+        <div class="pagination">
+          <div>
+            <span id="range">—</span>
+            <span class="mono" style="margin-left:8px" id="labelDir">—</span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button class="btn" id="prevBtn" type="button">Prev</button>
+            <button class="btn" id="nextBtn" type="button">Next</button>
+          </div>
+        </div>
+
+        <div id="err" class="err"></div>
+
+
+      </div>
+
+      <div class="card">
+        <div class="previewBox">
+          <div class="hint" id="previewHint">Select an image from the grid to preview & predict.</div>
+          <img id="previewImg" alt="preview" />
+        </div>
+
+        <div class="kv">
+          <div class="metric">
+            <div class="k">Selected</div>
+            <div class="v mono" id="selectedName">—</div>
+            <div class="sub" style="margin-top:6px">
+              Label: <span class="mono" id="selectedLabel">—</span>
+            </div>
+          </div>
+          <div class="metric">
+            <div class="k">Prediction</div>
+            <div class="v"><span class="badge amber" id="status"><i></i> WAITING</span></div>
+            <div class="sub" style="margin-top:6px">
+              FaceDetected: <span class="mono" id="face">—</span>
+            </div>
+            <div class="sub" style="margin-top:6px">
+              Predicted: <span class="mono" id="predSmall">—</span>
+            </div>
+          </div>
+          <div class="metric">
+            <div class="k">EAR</div>
+            <div class="v mono" id="ear">—</div>
+            <div class="sub" style="margin-top:6px">Mean EAR (landmarks)</div>
+          </div>
+          <div class="metric">
+            <div class="k">Confidence</div>
+            <div class="v mono" id="conf">—</div>
+            <div class="sub" style="margin-top:6px">0 to 1</div>
+          </div>
+          <div class="metric">
+            <div class="k">Confidence (%)</div>
+            <div class="v mono" id="confPct">—</div>
+            <div class="sub" style="margin-top:6px">Percentage</div>
+          </div>
+
+          <div class="chart-container" id="chartContainer">
+            <div class="gauge" id="confidenceGauge">
+              <div class="gauge-value" id="gaugeVal">0%</div>
+            </div>
+            <div class="gauge-label" id="gaugeLabel">PREDICTION CONFIDENCE</div>
+          </div>
+
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn primary" id="predictBtn" type="button" disabled>Predict selected</button>
+            <button class="btn" id="openImgBtn" type="button" disabled>Open image</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const svc = document.getElementById('svc');
+    const svcDot = document.getElementById('svcDot');
+    const model = document.getElementById('model');
+    const modePill = document.getElementById('modePill');
+    const resMode = document.getElementById('resMode');
+    const cntAwake = document.getElementById('cntAwake');
+    const cntDrowsy = document.getElementById('cntDrowsy');
+    const pctAwake = document.getElementById('pctAwake');
+    const pctDrowsy = document.getElementById('pctDrowsy');
+    const chartContainer = document.getElementById('chartContainer');
+    const confidenceGauge = document.getElementById('confidenceGauge');
+    const gaugeVal = document.getElementById('gaugeVal');
+    const gaugeLabel = document.getElementById('gaugeLabel');
+    const grid = document.getElementById('grid');
+    const err = document.getElementById('err');
+    const range = document.getElementById('range');
+    const labelDir = document.getElementById('labelDir');
+
+    // Tabs removed
+    const q = document.getElementById('q');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    const previewImg = document.getElementById('previewImg');
+    const previewHint = document.getElementById('previewHint');
+    const selectedName = document.getElementById('selectedName');
+    const selectedLabel = document.getElementById('selectedLabel');
+    const predictBtn = document.getElementById('predictBtn');
+    const openImgBtn = document.getElementById('openImgBtn');
+    let useModel = false; // default: EAR-threshold for consistent demo behavior
+
+    const statusEl = document.getElementById('status');
+    const earEl = document.getElementById('ear');
+    const confEl = document.getElementById('conf');
+    const confPctEl = document.getElementById('confPct');
+    const faceEl = document.getElementById('face');
+    const predSmall = document.getElementById('predSmall');
+
+    const PAGE_SIZE = 48;
+    let label = null; // Mixed view
+    let offset = 0;
+    let total = 0;
+    let query = '';
+    let selected = null; // { label, name, url }
+    let resultMode = 'ground'; // 'ground' | 'predict'
+
+    function setError(msg) {
+      err.style.display = msg ? 'block' : 'none';
+      err.textContent = msg || '';
+    }
+    function setSvc(ok) {
+      svc.textContent = ok ? 'OK' : 'NOT RUNNING';
+      svcDot.style.background = ok ? 'rgba(34,197,94,0.95)' : 'rgba(239,68,68,0.95)';
+      svcDot.style.boxShadow = ok ? '0 0 18px rgba(34,197,94,0.65)' : '0 0 18px rgba(239,68,68,0.55)';
+    }
+    function setBadge(kind, text) {
+      statusEl.className = 'badge ' + kind;
+      statusEl.innerHTML = '<i></i> ' + text;
+    }
+    function setBusy(isBusy) {
+      predictBtn.disabled = isBusy || !selected;
+      openImgBtn.disabled = !selected;
+      predictBtn.textContent = isBusy ? 'Predicting…' : 'Predict selected';
+    }
+    function fmt3(x) {
+      if (x === null || x === undefined) return '—';
+      const n = Number(x);
+      return Number.isFinite(n) ? n.toFixed(3) : '—';
+    }
+
+    async function checkService() {
+      try {
+        const r = await fetch('/api/ai/health');
+        if (!r.ok) throw new Error('health failed');
+        setSvc(true);
+      } catch {
+        setSvc(false);
+      }
+    }
+
+    async function loadModelInfo() {
+      try {
+        const r = await fetch('/api/ai/dataset/model');
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error('model status failed');
+        model.textContent = data.ready ? (data.usedModel ? 'READY' : 'EAR THRESHOLD') : 'NOT READY';
+      } catch {
+        model.textContent = '—';
+      }
+    }
+
+    async function loadSummary() {
+      try {
+        const r = await fetch('/api/ai/dataset/summary');
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data?.detail || 'summary failed');
+        const nAwake = data?.counts?.AWAKE ?? 0;
+        const nDrowsy = data?.counts?.DROWSY ?? 0;
+        const totalSamples = nAwake + nDrowsy;
+
+        cntAwake.textContent = String(nAwake);
+        cntDrowsy.textContent = String(nDrowsy);
+
+        if (totalSamples > 0) {
+          pctAwake.textContent = `(${(nAwake / totalSamples * 100).toFixed(1)}%)`;
+          pctDrowsy.textContent = `(${(nDrowsy / totalSamples * 100).toFixed(1)}%)`;
+        } else {
+          pctAwake.textContent = '';
+          pctDrowsy.textContent = '';
+        }
+      } catch (e) {
+        setError(String(e?.message || e));
+      }
+    }
+
+    // setTab function removed
+
+    function resetSelectedUI() {
+      selectedName.textContent = '—';
+      selectedLabel.textContent = '—';
+      previewImg.style.display = 'none';
+      previewHint.style.display = 'block';
+      previewHint.textContent = 'Select an image from the grid to preview & predict.';
+      setBadge('amber', 'WAITING');
+      predSmall.textContent = '—';
+      earEl.textContent = '—';
+      confEl.textContent = '—';
+      confPctEl.textContent = '—';
+      faceEl.textContent = '—';
+      setBusy(false);
+    }
+
+    function showGroundTruth() {
+      if (!selected) return;
+      if (selected.label === 'DROWSY') setBadge('red', 'DROWSY');
+      else setBadge('green', 'AWAKE');
+      resMode.textContent = 'GROUND_TRUTH';
+    }
+
+    function showPredicted(status, faceDetected) {
+      if (!faceDetected) setBadge('amber', 'NO FACE');
+      else if (status === 'DROWSY') setBadge('red', 'DROWSY');
+      else setBadge('green', 'AWAKE');
+      resMode.textContent = 'PREDICTION';
+    }
+
+    function selectItem(item) {
+      selected = item;
+      selectedName.textContent = item.name;
+      selectedLabel.textContent = item.label;
+      previewImg.src = item.url;
+      previewImg.style.display = 'block';
+      previewHint.style.display = 'none';
+      setBusy(false);
+      predSmall.textContent = '—';
+      if (resultMode === 'ground') {
+        showGroundTruth();
+      } else {
+        setBadge('amber', 'WAITING');
+        resMode.textContent = 'PREDICTION';
+      }
+      // highlight
+      document.querySelectorAll('.thumb').forEach(el => el.classList.remove('active'));
+      const active = document.querySelector(`.thumb[data-name="${CSS.escape(item.name)}"]`);
+      if (active) active.classList.add('active');
+    }
+
+    function render(items) {
+      grid.innerHTML = '';
+      for (const it of items) {
+        const d = document.createElement('div');
+        d.className = 'thumb';
+        d.dataset.name = it.name;
+        d.title = it.name;
+        d.innerHTML = `<img loading="lazy" alt="${it.name}" src="${it.url}"/><div class="cap">${it.name}</div>`;
+        d.addEventListener('click', () => selectItem(it));
+        grid.appendChild(d);
+      }
+    }
+
+    async function loadPage() {
+      setError('');
+      const params = new URLSearchParams();
+      if (label) params.set('label', label);
+      params.set('offset', String(offset));
+      params.set('limit', String(PAGE_SIZE));
+      if (query) params.set('q', query);
+
+      try {
+        const r = await fetch('/api/ai/dataset/list?' + params.toString());
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data?.detail || 'list failed');
+
+        total = Number(data.total ?? 0);
+        const items = data.items || [];
+        render(items);
+
+        const start = total === 0 ? 0 : Math.min(offset + 1, total);
+        const end = Math.min(offset + PAGE_SIZE, total);
+        range.textContent = `Showing ${start}-${end} of ${total}`;
+        labelDir.textContent = query ? `filter="${query}"` : '';
+
+        prevBtn.disabled = offset <= 0;
+        nextBtn.disabled = (offset + PAGE_SIZE) >= total;
+      } catch (e) {
+        setError(String(e?.message || e));
+        grid.innerHTML = '';
+        range.textContent = '—';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+      }
+    }
+
+    async function predictSelected() {
+      if (!selected) return;
+      setBusy(true);
+      setError('');
+      setBadge('amber', 'PROCESSING');
+
+      const params = new URLSearchParams();
+      params.set('label', selected.label);
+      params.set('name', selected.name);
+      params.set('use_model', useModel ? 'true' : 'false');
+      try {
+        const r = await fetch('/api/ai/dataset/predict-from-dataset?' + params.toString());
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data?.detail || 'predict failed');
+
+        const face = !!data.face_detected;
+        const predictedStatus = data.status || '—';
+        predSmall.textContent = predictedStatus;
+
+        if (resultMode === 'ground') {
+          showGroundTruth();
+        } else {
+          showPredicted(predictedStatus, face);
+        }
+
+        faceEl.textContent = face ? 'true' : 'false';
+        earEl.textContent = fmt3(data.ear);
+        confEl.textContent = fmt3(data.confidence);
+        confPctEl.textContent = Number(data.confidence) ? (Number(data.confidence) * 100).toFixed(1) + '%' : '—';
+
+        // Update Gauge
+        if (Number(data.confidence)) {
+          const pct = Number(data.confidence) * 100;
+          chartContainer.style.display = 'flex';
+          gaugeVal.textContent = pct.toFixed(1) + '%';
+          const color = predictedStatus === 'DROWSY' ? 'var(--red)' : 'var(--green)';
+          confidenceGauge.style.background = `conic-gradient(${color} ${pct * 3.6}deg, rgba(255,255,255,0.05) 0deg)`;
+          gaugeLabel.textContent = predictedStatus + ' CONFIDENCE';
+        } else {
+          chartContainer.style.display = 'none';
+        }
+
+        // usedModel details removed
+      } catch (e) {
+        setBadge('amber', 'ERROR');
+        setError(String(e?.message || e));
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    // Tab listeners removed
+    prevBtn.addEventListener('click', () => { offset = Math.max(0, offset - PAGE_SIZE); loadPage(); });
+    nextBtn.addEventListener('click', () => { offset = offset + PAGE_SIZE; loadPage(); });
+    searchBtn.addEventListener('click', () => { query = (q.value || '').trim(); offset = 0; loadPage(); });
+    clearSearchBtn.addEventListener('click', () => { q.value = ''; query = ''; offset = 0; loadPage(); });
+    q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { query = (q.value || '').trim(); offset = 0; loadPage(); } });
+    predictBtn.addEventListener('click', predictSelected);
+    openImgBtn.addEventListener('click', () => { if (selected) window.open(selected.url, '_blank'); });
+
+    // Toggle model mode by clicking the "Model" pill.
+    model.parentElement?.addEventListener('click', () => {
+      useModel = !useModel;
+      model.textContent = useModel ? 'CLASSIFIER' : 'EAR THRESHOLD';
+    });
+
+    // Toggle result mode: Ground truth vs Prediction.
+    modePill?.addEventListener('click', () => {
+      resultMode = (resultMode === 'ground') ? 'predict' : 'ground';
+      resMode.textContent = (resultMode === 'ground') ? 'GROUND_TRUTH' : 'PREDICTION';
+      // Update badge instantly for selected item.
+      if (selected) {
+        if (resultMode === 'ground') showGroundTruth();
+        else setBadge('amber', 'WAITING');
+      }
+    });
+
+    checkService();
+    loadModelInfo();
+    loadSummary();
+    resetSelectedUI();
+    loadPage();
+  </script>
+</body>
+
+</html>

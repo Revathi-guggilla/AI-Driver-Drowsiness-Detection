@@ -1,0 +1,122 @@
+[
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "a0002.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Non Drowsy\\a0002.png",
+    "avgEAR": 0.2102283215458507,
+    "minEAR": 0.2102283215458507,
+    "blinkRate": 0,
+    "confidence": 0.7094102250968418,
+    "faceDetected": true,
+    "label": "AWAKE",
+    "predicted": "AWAKE"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "a0002.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Non Drowsy\\a0002.png",
+    "avgEAR": 0.2102283215458507,
+    "minEAR": 0.2102283215458507,
+    "blinkRate": 0,
+    "confidence": 0.7094102250968418,
+    "faceDetected": true,
+    "label": "AWAKE",
+    "predicted": "AWAKE"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "a0003.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Non Drowsy\\a0003.png",
+    "avgEAR": 0.26975660712866023,
+    "minEAR": 0.26975660712866023,
+    "blinkRate": 0,
+    "confidence": 0.9005866484657271,
+    "faceDetected": true,
+    "label": "AWAKE",
+    "predicted": "DROWSY"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "a0003.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Non Drowsy\\a0003.png",
+    "avgEAR": 0.26975660712866023,
+    "minEAR": 0.26975660712866023,
+    "blinkRate": 0,
+    "confidence": 0.9005866484657271,
+    "faceDetected": true,
+    "label": "AWAKE",
+    "predicted": "DROWSY"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "a0004.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Non Drowsy\\a0004.png",
+    "avgEAR": 0.2644202815993256,
+    "minEAR": 0.2644202815993256,
+    "blinkRate": 0,
+    "confidence": 0.8228085061088619,
+    "faceDetected": true,
+    "label": "AWAKE",
+    "predicted": "AWAKE"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "A0001.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Drowsy\\A0001.png",
+    "avgEAR": 0.2146417439356461,
+    "minEAR": 0.2146417439356461,
+    "blinkRate": 0,
+    "confidence": 0.5554400115343072,
+    "faceDetected": true,
+    "label": "DROWSY",
+    "predicted": "AWAKE"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "A0001.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Drowsy\\A0001.png",
+    "avgEAR": 0.2146417439356461,
+    "minEAR": 0.2146417439356461,
+    "blinkRate": 0,
+    "confidence": 0.5554400115343072,
+    "faceDetected": true,
+    "label": "DROWSY",
+    "predicted": "AWAKE"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "A0002.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Drowsy\\A0002.png",
+    "avgEAR": 0.2295892996985987,
+    "minEAR": 0.2295892996985987,
+    "blinkRate": 0,
+    "confidence": 0.909868712968306,
+    "faceDetected": true,
+    "label": "DROWSY",
+    "predicted": "DROWSY"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "A0002.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Drowsy\\A0002.png",
+    "avgEAR": 0.2295892996985987,
+    "minEAR": 0.2295892996985987,
+    "blinkRate": 0,
+    "confidence": 0.909868712968306,
+    "faceDetected": true,
+    "label": "DROWSY",
+    "predicted": "DROWSY"
+  },
+  {
+    "source": "DATASET_IMAGE",
+    "videoName": "A0003.png",
+    "imagePath": "C:\\Users\\bharg\\Desktop\\CSE_10\\backend\\python_service\\dataset\\Drowsy\\A0003.png",
+    "avgEAR": 0.2807733837927521,
+    "minEAR": 0.2807733837927521,
+    "blinkRate": 0,
+    "confidence": 0.7302539673874557,
+    "faceDetected": true,
+    "label": "DROWSY",
+    "predicted": "DROWSY"
+  }
+]

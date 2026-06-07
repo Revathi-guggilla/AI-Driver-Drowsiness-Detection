@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+python-multipart
+numpy
+opencv-python
+dlib
+imutils
+scikit-learn
+requests
+joblib
+
+

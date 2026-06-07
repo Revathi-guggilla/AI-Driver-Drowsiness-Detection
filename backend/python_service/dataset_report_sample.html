@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dataset Mode Report</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: rgba(255,255,255,0.06);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --line: rgba(255,255,255,0.10);
+      --green: #22c55e;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --blue: #60a5fa;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 15% 15%, rgba(96,165,250,0.25), transparent 55%),
+                  radial-gradient(1000px 550px at 85% 25%, rgba(239,68,68,0.18), transparent 55%),
+                  radial-gradient(900px 600px at 55% 85%, rgba(34,197,94,0.18), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 18px 60px; }
+    .title { display: flex; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+    h1 { margin: 0; font-size: 28px; letter-spacing: 0.2px; }
+    .subtitle { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .pill { background: rgba(255,255,255,0.08); border: 1px solid var(--line); padding: 8px 10px; border-radius: 999px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0 14px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; box-shadow: var(--shadow); backdrop-filter: blur(10px); }
+    .k { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .v { font-size: 22px; font-weight: 700; letter-spacing: 0.2px; }
+    .note { margin-top: 6px; font-size: 12px; color: var(--muted); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .section { margin-top: 14px; }
+    .section h2 { margin: 0 0 10px; font-size: 16px; color: rgba(255,255,255,0.88); }
+    .badge { display: inline-block; font-size: 12px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.08); }
+    .badge-green { color: var(--green); }
+    .badge-red { color: var(--red); }
+    .badge-amber { color: var(--amber); }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 13px; }
+    th { color: rgba(255,255,255,0.75); font-weight: 600; background: rgba(255,255,255,0.06); }
+    tr:last-child td { border-bottom: none; }
+    td.path { max-width: 520px; color: rgba(255,255,255,0.60); word-break: break-all; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } .two { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">
+      <div>
+        <h1>Dataset Mode Report</h1>
+        <div class="subtitle">
+          <div><span class="badge badge-amber">Dataset</span> <span class="mono">C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset</span></div>
+          <div>Loaded model: <span class='mono'>backend/python_service/models/test_model.joblib</span></div>
+        </div>
+      </div>
+      <div class="pill">Generated: <span class="mono">2026-02-06 14:41:54</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="card"><div class="k">Accuracy</div><div class="v" style="color: var(--blue)">60.00%</div><div class="note">Total: <span class="mono">10</span></div></div>
+      <div class="card"><div class="k">Precision (DROWSY)</div><div class="v" style="color: var(--green)">60.00%</div><div class="note">Avoids false alarms</div></div>
+      <div class="card"><div class="k">Recall (DROWSY)</div><div class="v" style="color: var(--red)">60.00%</div><div class="note">Catches drowsiness</div></div>
+      <div class="card"><div class="k">No-Face Frames</div><div class="v">0</div><div class="note">Low-confidence AWAKE</div></div>
+    </div>
+
+    <div class="two section">
+      <div class="card">
+        <h2>False Positives (AWAKE → DROWSY)</h2>
+        <table><thead><tr><th>Image</th><th>EAR</th><th>Conf</th><th>Face</th><th>Path</th></tr></thead><tbody>
+          <tr><td class='mono'>a0003.png</td><td class='mono'>0.270</td><td class='mono'>0.901</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Non Drowsy\a0003.png</td></tr><tr><td class='mono'>a0003.png</td><td class='mono'>0.270</td><td class='mono'>0.901</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Non Drowsy\a0003.png</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card">
+        <h2>False Negatives (DROWSY → AWAKE)</h2>
+        <table><thead><tr><th>Image</th><th>EAR</th><th>Conf</th><th>Face</th><th>Path</th></tr></thead><tbody>
+          <tr><td class='mono'>A0001.png</td><td class='mono'>0.215</td><td class='mono'>0.555</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Drowsy\A0001.png</td></tr><tr><td class='mono'>A0001.png</td><td class='mono'>0.215</td><td class='mono'>0.555</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Drowsy\A0001.png</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="section card">
+      <h2>Preview (first 200 results)</h2>
+      <table>
+        <thead><tr><th>Image</th><th>Label</th><th>Pred</th><th>EAR</th><th>Conf</th><th>Face</th><th>Path</th></tr></thead>
+        <tbody>
+          <tr><td class='mono'>a0002.png</td><td><span class='badge badge-green'>AWAKE</span></td><td><span class='badge badge-green'>AWAKE</span></td><td class='mono'>0.210</td><td class='mono'>0.709</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Non Drowsy\a0002.png</td></tr><tr><td class='mono'>a0002.png</td><td><span class='badge badge-green'>AWAKE</span></td><td><span class='badge badge-green'>AWAKE</span></td><td class='mono'>0.210</td><td class='mono'>0.709</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Non Drowsy\a0002.png</td></tr><tr><td class='mono'>a0003.png</td><td><span class='badge badge-green'>AWAKE</span></td><td><span class='badge badge-red'>DROWSY</span></td><td class='mono'>0.270</td><td class='mono'>0.901</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Non Drowsy\a0003.png</td></tr><tr><td class='mono'>a0003.png</td><td><span class='badge badge-green'>AWAKE</span></td><td><span class='badge badge-red'>DROWSY</span></td><td class='mono'>0.270</td><td class='mono'>0.901</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Non Drowsy\a0003.png</td></tr><tr><td class='mono'>a0004.png</td><td><span class='badge badge-green'>AWAKE</span></td><td><span class='badge badge-green'>AWAKE</span></td><td class='mono'>0.264</td><td class='mono'>0.823</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Non Drowsy\a0004.png</td></tr><tr><td class='mono'>A0001.png</td><td><span class='badge badge-red'>DROWSY</span></td><td><span class='badge badge-green'>AWAKE</span></td><td class='mono'>0.215</td><td class='mono'>0.555</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Drowsy\A0001.png</td></tr><tr><td class='mono'>A0001.png</td><td><span class='badge badge-red'>DROWSY</span></td><td><span class='badge badge-green'>AWAKE</span></td><td class='mono'>0.215</td><td class='mono'>0.555</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Drowsy\A0001.png</td></tr><tr><td class='mono'>A0002.png</td><td><span class='badge badge-red'>DROWSY</span></td><td><span class='badge badge-red'>DROWSY</span></td><td class='mono'>0.230</td><td class='mono'>0.910</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Drowsy\A0002.png</td></tr><tr><td class='mono'>A0002.png</td><td><span class='badge badge-red'>DROWSY</span></td><td><span class='badge badge-red'>DROWSY</span></td><td class='mono'>0.230</td><td class='mono'>0.910</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Drowsy\A0002.png</td></tr><tr><td class='mono'>A0003.png</td><td><span class='badge badge-red'>DROWSY</span></td><td><span class='badge badge-red'>DROWSY</span></td><td class='mono'>0.281</td><td class='mono'>0.730</td><td class='mono'>YES</td><td class='path'>C:\Users\bharg\Desktop\CSE_10\backend\python_service\dataset\Drowsy\A0003.png</td></tr>
+        </tbody>
+      </table>
+      <div class="note">Preview is capped to keep report fast on huge datasets.</div>
+    </div>
+  </div>
+</body>
+</html>

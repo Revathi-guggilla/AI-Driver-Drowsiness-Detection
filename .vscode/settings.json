@@ -1,0 +1,26 @@
+{
+    "python.defaultInterpreterPath": "d:\\Final Year Project\\CSE_10\\backend\\python_service\\venv\\Scripts\\python.exe",
+    "python.interpreterPath": "d:\\Final Year Project\\CSE_10\\backend\\python_service\\venv\\Scripts\\python.exe",
+    "python.analysis.extraPaths": [
+        "d:\\Final Year Project\\CSE_10\\backend\\python_service"
+    ],
+    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none",
+        "reportUndefinedVariable": "none",
+        "reportGeneralTypeIssues": "none",
+        "reportMissingModuleSource": "none",
+        "reportUnusedImport": "none",
+        "reportUnusedVariable": "none"
+    },
+    "python.analysis.ignore": ["**/*.py"],
+    "python.linting.enabled": false,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": false,
+    "python.linting.mypyEnabled": false,
+    "python.analysis.diagnosticMode": "openFilesOnly",
+    "python.languageServer": "None",
+    "pyre.enabled": false,
+    "pyre.hush": true,
+    "python.jediEnabled": false
+}

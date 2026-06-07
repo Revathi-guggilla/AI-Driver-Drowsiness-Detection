@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "start:python": "node -e \"require('child_process').spawn('python_service/venv/Scripts/python.exe', ['python_service/main.py'], { stdio: 'inherit', shell: true })\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "AI-based Driver Drowsiness Detection backend (Node.js, Express, PostgreSQL, JWT)",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
